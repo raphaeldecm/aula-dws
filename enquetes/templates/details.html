@@ -8,6 +8,7 @@
     <h2>{{question.question_text}}</h2>
     <p>Data de criação: {{question.pub_date}}</p>
     <h3>Opções:</h3>
+    <a href="{% url 'create-choices' question.id %}">Create Options</a>
     <ul>
         {%for choice in question.choice_set.all%}
         <li><strong>{{choice}}</strong>: {{choice.votes}}</li>

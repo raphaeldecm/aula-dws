@@ -8,10 +8,10 @@
     <div>
         {{form_question.question_text.label_tag}}
         {{form_question.question_text}}
-        {{form_choice1.choice_text.label_tag}}
+        {% comment %} {{form_choice1.choice_text.label_tag}}
         {{form_choice1.choice_text}}
         {{form_choice2.choice_text.label_tag}}
-        {{form_choice2.choice_text}}
+        {{form_choice2.choice_text}} {% endcomment %}
 
         {%for error in form.question_text.errors%}
         <span style="color:red">{{error}}</span>

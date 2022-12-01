@@ -1,11 +1,15 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.views import generic
 import datetime
 
-from .models import Question, Choice
-from .forms import QuestionForm, QuestionModelForm, QuestionFormCustomTemplate, FormUser, ChoiceModelForm, VoteForm
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views import generic
+from django.views.generic import CreateView
+
+from .forms import (ChoiceModelForm, FormUser, QuestionForm,
+                    QuestionFormCustomTemplate, QuestionModelForm, VoteForm)
+from .models import Choice, Question
 
 # as views acima serão substituídas por views genéricas
 
@@ -57,29 +61,48 @@ def details(request, question_id):
     context = {'question': question}
     return render(request, 'details.html', context)
 
+def create_choices(request, id):
+    
+    context = {}
+    question = Question.objects.get(pk=id)
+    form = ChoiceModelForm(request.POST or None)
 
-def create(request):
+    if request.method == 'POST':
+        
+        if form.errors:
+            print(form.errors)
+
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('detail', kwargs={"question_id": id}))
+    
+    context['form'] = form
+    context['question'] = question
+
+    return render(request, 'create_choices.html', context)
+
+def create_question(request):
     form_question = QuestionModelForm()
-    form_choice1 = ChoiceModelForm(prefix='choice1')
-    form_choice2 = ChoiceModelForm(prefix='choice2')
+    # form_choice1 = ChoiceModelForm()
+    # form_choice2 = ChoiceModelForm(prefix='choice2')
     question = Question.objects.get(pk=1)
     print(question.choice_set.all())
     if request.method == 'POST':
         form_question = QuestionModelForm(request.POST)
-        form_choice1 = ChoiceModelForm(request.POST, prefix='choice1')
-        form_choice2 = ChoiceModelForm(request.POST, prefix='choice2')
+        # form_choice1 = ChoiceModelForm(request.POST, prefix='choice1')
+        # form_choice2 = ChoiceModelForm(request.POST, prefix='choice2')
 
-        if all([form_question.is_valid(), form_choice1.is_valid(), form_choice2.is_valid()]):
+        if form_question.is_valid():
             question = form_question.save()
-            choice1 = form_choice1.save(commit=False)
-            choice2 = form_choice2.save(commit=False)
-            choice1.question = choice2.question = question
-            choice1.save()
-            choice2.save()
+            # choice1 = form_choice1.save(commit=False)
+            # choice2 = form_choice2.save(commit=False)
+            # choice1.question = choice2.question = question
+            # choice1.save()
+            # choice2.save()
             return redirect('index')
-    context = {'form_question': form_question,
-               'form_choice1': form_choice1, 'form_choice2': form_choice2}
-    return render(request, 'create.html', context)
+    context = {'form_question': form_question}
+            #    'form_choice1': form_choice1, 'form_choice2': form_choice2}
+    return render(request, 'create_question.html', context)
 
 
 '''

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Question, User, Choice
+
+from .models import Choice, Question, User
 
 
 def mobile_num(value):
@@ -31,7 +32,7 @@ class QuestionModelForm(forms.ModelForm):
 class ChoiceModelForm(forms.ModelForm):
     class Meta:
         model = Choice
-        fields = ['choice_text']
+        fields = ['choice_text', 'question']
 
 
 class QuestionFormCustomTemplate(forms.Form):

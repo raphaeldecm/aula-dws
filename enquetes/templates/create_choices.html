@@ -1,0 +1,23 @@
+{%extends 'base.html'%}
+{%block main%}
+<h1>Create Choices</h1>
+
+<form action="" method="post">
+    {%csrf_token%}
+
+    <div>
+        {{ form.question.label_tag }}
+        {{ form.question }}
+        {{form.choice_text.label_tag}}
+        {{form.choice_text}}
+        
+
+        {%for error in form.choice_text.errors%}
+        <span style="color:red">{{error}}</span>
+        {%endfor%}
+    </div>
+
+    <button type="submit">Criar</button>
+</form>
+{%endblock%}
+<!---->
